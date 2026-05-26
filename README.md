@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Prompt Manager
 
-## Getting Started
+Aplicação para gerenciar prompts de IA — crie, edite e delete prompts em um único lugar.
 
-First, run the development server:
+## Tecnologias
+
+| Tecnologia                                           | Versão | Uso                                                |
+| ---------------------------------------------------- | ------ | -------------------------------------------------- |
+| [Next.js](https://nextjs.org)                        | 16     | Framework React com Server Components e App Router |
+| [React](https://react.dev)                           | 19     | Biblioteca de UI                                   |
+| [TypeScript](https://www.typescriptlang.org)         | 5      | Tipagem estática                                   |
+| [Tailwind CSS](https://tailwindcss.com)              | 4      | Estilização utility-first                          |
+| [Prisma](https://www.prisma.io)                      | 7      | ORM para acesso ao banco de dados                  |
+| [PostgreSQL](https://www.postgresql.org)             | —      | Banco de dados relacional                          |
+| [Radix UI](https://www.radix-ui.com)                 | 1      | Componentes acessíveis sem estilo                  |
+| [Lucide React](https://lucide.dev)                   | 1      | Ícones                                             |
+| [Jest](https://jestjs.io)                            | 30     | Testes unitários e de componentes                  |
+| [Testing Library](https://testing-library.com)       | 16     | Utilitários de teste para React                    |
+| [Lefthook](https://github.com/evilmartians/lefthook) | 2      | Git hooks (lint, typecheck e testes no push)       |
+| [Prettier](https://prettier.io)                      | 3      | Formatação de código                               |
+| [ESLint](https://eslint.org)                         | 9      | Análise estática de código                         |
+
+## Como funciona
+
+A aplicação tem um layout com sidebar lateral e área de conteúdo principal:
+
+- **Sidebar** — lista todos os prompts salvos, buscados direto do banco via React Server Component
+- **Área principal** — exibe o prompt selecionado com opções para editar ou deletar; quando nenhum está selecionado, orienta o usuário a escolher um da lista
+
+O modelo `Prompt` no banco possui `id`, `title` (único), `content`, `createdAt` e `updatedAt`.
+
+## Pré-requisitos
+
+- Node.js 20+
+- pnpm
+- PostgreSQL
+
+## Instalação
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Configure a variável de ambiente com a URL do banco:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# .env
+DATABASE_URL="postgresql://user:password@localhost:5432/prompt_manager"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Rode as migrations:
 
-## Learn More
+```bash
+pnpm prisma migrate dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Comando              | O que faz                            |
+| -------------------- | ------------------------------------ |
+| `pnpm dev`           | Inicia o servidor de desenvolvimento |
+| `pnpm build`         | Gera o build de produção             |
+| `pnpm start`         | Inicia o servidor em modo produção   |
+| `pnpm test`          | Roda os testes                       |
+| `pnpm test:watch`    | Roda os testes em modo watch         |
+| `pnpm test:coverage` | Gera relatório de cobertura          |
+| `pnpm typecheck`     | Verifica os tipos com TypeScript     |
+| `pnpm lint`          | Analisa o código com ESLint          |
+| `pnpm format`        | Formata o código com Prettier        |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Git Hooks (Lefthook)
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **pre-commit** — formata os arquivos staged com Prettier
+- **pre-push** — executa `typecheck`, `lint` e `test:coverage` nos arquivos `.ts/.tsx` alterados
