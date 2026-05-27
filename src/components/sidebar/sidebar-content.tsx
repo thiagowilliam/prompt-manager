@@ -6,13 +6,26 @@ import {
   ArrowRightToLine,
   X as CloseButton,
 } from 'lucide-react';
+
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Button } from '../ui/button';
 import { Logo } from '../logo';
 
-export const SidebarContent = () => {
+interface Prompt {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface SidebarContentProps {
+  prompts: Prompt[];
+}
+
+export const SidebarContent = ({ prompts }: SidebarContentProps) => {
   const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -73,6 +86,19 @@ export const SidebarContent = () => {
               Novo prompt
             </Button>
           </div>
+
+          <nav className="mt-6 flex flex-col gap-1">
+            {prompts.map((prompt) => (
+              <button
+                key={prompt.id}
+                type="button"
+                onClick={() => router.push(`/prompt/${prompt.id}`)}
+                className="text-left px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-gray-700 hover:text-gray-100 transition-colors truncate"
+              >
+                {prompt.title}
+              </button>
+            ))}
+          </nav>
         </section>
       )}
     </aside>
